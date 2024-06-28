@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: CarroServices API
+  version: 1.0.0
+  description: API para la gestión de carros
+servers:
+  - url: http://localhost:8080/demo64DockC/rs
+    description: Local Server
+
+paths:
+  /carros:
+    post:
+      summary: Crear un nuevo carro
+      operationId: guardarCarro
+      requestBody:
+        description: Datos del carro a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carro'
+      responses:
+        '201':
+          description: Carro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Actualizar un carro existente
+      operationId: actualizarCarro
+      requestBody:
+        description: Datos del carro a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carro'
+      responses:
+        '200':
+          description: Carro actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carro'
+        '404':
+          description: Carro no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    delete:
+      summary: Eliminar un carro
+      operationId: eliminarCarro
+      parameters:
+        - name: placa
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Placa del carro a eliminar
+      responses:
+        '200':
+          description: Carro eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Carro Eliminado"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    get:
+      summary: Obtener carro por placa
+      operationId: getCarroPorCodigo
+      parameters:
+        - in: query
+          name: placa
+          required: true
+          schema:
+            type: string
+          description: Placa del carro a obtener
+      responses:
+        '200':
+          description: Carro encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carro'
+        '404':
+          description: Carro no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /carros/list:
+    get:
+      summary: Obtener la lista de carros
+      operationId: getCarros
+      responses:
+        '200':
+          description: Lista de carros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carro'
+        '404':
+          description: No se registran carros
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+components:
+  schemas:
+    Carro:
+      type: object
+      properties:
+        placa:
+          type: string
+        modelo:
+          type: string
+        marca:
+          type: string
+    ErrorMessage:
+      type: object
+      properties:
+        codigo:
+          type: integer
+          example: 1
+        mensaje:
+          type: string
+          example: ok
